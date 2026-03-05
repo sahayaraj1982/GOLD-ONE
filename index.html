@@ -3,102 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAHAYARAJ-2026</title>
+    <title>SAHAYARAJ-2026-PREMIUM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root { 
-            --p-bg: #0c40bb; --n-col: #ffffff; --out: #54301d; --btm: #0b08d4; 
-            --c-let: #e32b2b; --c-num: #1e40af; --pat-en: #ffffff; --pat-dash: #f1f5f9;
+            --p-bg: #1e1b4b; --n-col: #ffffff; --out: #dc2626; --btm: #1d4ed8; 
+            --pat-en: #ffffff; --pat-dash: #f8fafc;
         }
-        body { background-color: #475569; font-family: 'Arial Black', sans-serif; overflow-x: hidden; }
-        * { font-weight: 950 !important; }
-        .main-app-box { border: 12px solid var(--out); margin: 10px auto; border-radius: 45px; background: var(--pat-dash); transition: 0.3s; box-shadow: inset 0 0 20px rgba(0,0,0,0.2); }
-        .premium-header { background-color: var(--p-bg); padding: 20px; border-bottom: 10px solid var(--btm); border-radius: 30px 30px 0 0; }
+        body { background-color: #1e293b; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { font-weight: 800 !important; }
+
+        /* Real 3D Button Style */
         .natural-btn { 
-            background: var(--btm); color: white; border-bottom: 6px solid rgba(0,0,0,0.5); 
-            border-right: 4px solid rgba(0,0,0,0.3); border-radius: 15px; transition: 0.1s;
+            position: relative;
+            border: none;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 0 6px 0px rgba(0,0,0,0.4), 0 8px 15px rgba(0,0,0,0.2);
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
         }
-        .natural-btn:active { transform: translateY(3px); border-bottom-width: 2px; }
-        .natural-btn:disabled { background: #94a3b8 !important; border-bottom: none; cursor: not-allowed; transform: none; }
+        .natural-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0px rgba(0,0,0,0.4), 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .main-app-box { 
+            border: 8px solid var(--out); 
+            border-radius: 30px; 
+            background: var(--pat-dash); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
         .cat-card { 
-            background: #fff; border: 5px solid var(--out); border-radius: 22px; text-align: center; 
-            box-shadow: 5px 5px 0px rgba(0,0,0,0.1);
+            background: #fff; border: 3px solid var(--out); border-radius: 15px; 
+            padding: 10px; transition: 0.3s;
+            box-shadow: 4px 4px 0px var(--out);
         }
-        .icon-row-btn { width: 55px; height: 55px; border-radius: 15px; border: 4px solid #000; font-size: 24px; display: flex; align-items: center; justify-content: center; background: #fff; box-shadow: 0 4px 0 #000; }
-        .icon-row-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
-        .cp-card { background: #fff; width: 98%; max-width: 1300px; border-radius: 40px; padding: 25px; border: 10px solid #000; }
-        .setting-row { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 8px 12px; border: 3px solid #000; border-radius: 12px; margin-bottom: 5px; }
-        #expiryBanner { display: none; background: #ef4444; color: white; text-align: center; padding: 10px; font-size: 14px; border-bottom: 4px solid #000; }
+
+        .glass-header {
+            background: linear-gradient(135deg, var(--p-bg) 0%, #312e81 100%);
+            border-bottom: 6px solid var(--out);
+            border-radius: 22px 22px 0 0;
+        }
+
+        #expiryBanner { display: none; background: #ce1212; color: white; text-align: center; padding: 10px; font-weight: bold; }
     </style>
 </head>
 <body onload="init()">
 
-<div id="expiryBanner">⚠️ இந்த ஸ்கிரிப்ட் காலாவதியாகிவிட்டது! தயவுசெய்து புதுப்பிக்கவும்.</div>
+<div id="expiryBanner">⚠️ ஸ்கிரிப்ட் காலாவதியானது! புதுப்பிக்கவும்.</div>
 
-<div id="appPage" class="p-2">
-    <div id="mainContainer" class="main-app-box mx-auto">
-        <div class="premium-header text-center">
-            <h1 id="dispTitle" class="text-4xl italic uppercase mb-2" style="color: var(--n-col);">SAHAYARAJ-2026</h1>
-            <div class="flex justify-between items-end text-white px-4">
-                <div class="text-left">
-                    <p id="startDateDisplay" class="text-xs text-yellow-300 font-bold"></p>
-                    <p class="text-sm">RECORDS: <span id="recCount" class="text-yellow-400">0</span></p>
-                </div>
-                <h2 id="mainTotal" class="text-5xl drop-shadow-lg" style="display: block;">₹0</h2>
+<div id="appPage" class="p-2 max-w-6xl mx-auto">
+    <div class="main-app-box overflow-hidden">
+        <div class="glass-header p-6 flex justify-between items-center text-white">
+            <div class="text-left">
+                <h1 id="dispTitle" class="text-3xl tracking-tighter uppercase italic" style="color: var(--n-col);">INDIAN</h1>
+                <div id="liveClock" class="text-sm font-mono text-blue-300">00/00/0000 00:00:00</div>
+                <p id="startDateDisplay" class="text-[10px] text-yellow-400 mt-1"></p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs opacity-80 uppercase">Available Balance</p>
+                <h2 id="mainTotal" class="text-4xl font-black text-white drop-shadow-md">₹0</h2>
+                <p class="text-xs">Entries: <span id="recCount" class="text-green-400">0</span></p>
             </div>
         </div>
 
-        <div class="flex justify-center gap-6 py-4 bg-gray-200 border-b-4 border-black">
-            <button onclick="document.getElementById('bellStartDate').showPicker()" class="icon-row-btn">🔔</button>
+        <div class="flex justify-center gap-4 py-3 bg-gray-100 border-b-2 border-black/10">
+            <button onclick="document.getElementById('bellStartDate').showPicker()" class="natural-btn bg-white p-3 rounded-xl border-2 border-black">🔔</button>
             <input type="date" id="bellStartDate" onchange="setStartingDate()" class="hidden">
-            
-            <button onclick="linkDrive()" class="icon-row-btn">☁️</button>
-            <button onclick="openGeneralSettings()" class="icon-row-btn">⚙️</button>
-            <button onclick="openPasswordSettings()" class="icon-row-btn">🔒</button>
+            <button onclick="linkDrive()" class="natural-btn bg-white p-3 rounded-xl border-2 border-black">☁️</button>
+            <button onclick="openGeneralSettings()" class="natural-btn bg-white p-3 rounded-xl border-2 border-black">⚙️</button>
+            <button onclick="openPasswordSettings()" class="natural-btn bg-white p-3 rounded-xl border-2 border-black">🔒</button>
         </div>
 
         <div class="p-4">
-            <div id="catGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6"></div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="p-5 rounded-3xl border-4 border-black" style="background: var(--pat-en);">
-                    <h3 class="text-xl border-b-4 border-green-600 mb-4 italic uppercase">New Entry</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="date" id="eDate" class="border-4 border-black p-3 rounded-xl">
-                        <input type="tel" id="eMob" placeholder="Mobile" class="border-4 border-black p-3 rounded-xl">
-                        <select id="eCat" class="border-4 border-black p-3 rounded-xl"></select>
-                        <input type="text" id="eDesc" placeholder="Remark" class="border-4 border-black p-3 rounded-xl">
-                        <input type="number" id="eAmt" placeholder="Amount" class="border-4 border-black p-3 rounded-xl">
-                        <select id="eType" class="border-4 border-black p-3 rounded-xl"><option value="CR">IN (+)</option><option value="DR">OUT (-)</option></select>
-                    </div>
-                    <button id="mainSaveBtn" onclick="saveData()" class="w-full py-5 mt-5 rounded-2xl text-2xl natural-btn bg-green-600">SAVE ✅</button>
+            <div id="catGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
                 </div>
 
-                <div class="bg-white p-5 rounded-3xl border-4 border-black">
-                    <h3 class="text-xl border-b-4 border-blue-600 mb-4 italic uppercase">Tools & Filters</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="p-5 rounded-2xl border-4 border-black" style="background: var(--pat-en); border-color: var(--out);">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">📝 NEW ENTRY</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="date" id="eDate" class="border-2 border-black p-2 rounded-lg focus:ring-2 ring-blue-500">
+                        <input type="tel" id="eMob" placeholder="Mobile" class="border-2 border-black p-2 rounded-lg">
+                        <select id="eCat" class="border-2 border-black p-2 rounded-lg bg-white"></select>
+                        <input type="text" id="eDesc" placeholder="Remark" class="border-2 border-black p-2 rounded-lg">
+                        <input type="number" id="eAmt" placeholder="Amount" class="border-2 border-black p-2 rounded-lg">
+                        <select id="eType" class="border-2 border-black p-2 rounded-lg bg-gray-50 text-blue-700">
+                            <option value="CR">IN (+)</option>
+                            <option value="DR">OUT (-)</option>
+                        </select>
+                    </div>
+                    <button id="mainSaveBtn" onclick="saveData()" class="w-full py-4 mt-5 rounded-xl text-xl natural-btn bg-green-600 text-white border-b-4 border-green-800">SAVE RECORD ✅</button>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border-4 border-black" style="border-color: var(--out);">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">🔍 FILTERS & TOOLS</h3>
                     <div class="grid grid-cols-3 gap-2 mb-4">
-                        <input type="date" id="fDate" class="border-2 border-black p-1 text-xs">
-                        <input type="date" id="tDate" class="border-2 border-black p-1 text-xs">
-                        <input type="tel" id="sMob" placeholder="Mobile" class="border-2 border-black p-1 text-xs">
+                        <input type="date" id="fDate" class="border-2 border-black p-1 text-xs rounded">
+                        <input type="date" id="tDate" class="border-2 border-black p-1 text-xs rounded">
+                        <input type="tel" id="sMob" placeholder="Search Mobile" class="border-2 border-black p-1 text-xs rounded">
                     </div>
                     <div id="filterCatList" class="flex flex-wrap gap-2 mb-4"></div>
                     <div class="grid grid-cols-3 gap-3">
-                        <button onclick="downloadPDF()" class="natural-btn bg-orange-600 py-3 text-xs">PDF</button>
-                        <button onclick="sendWhatsApp()" class="natural-btn bg-green-600 py-3 text-xs">WHATSAPP</button>
-                        <button onclick="deleteAll()" class="natural-btn bg-red-600 py-3 text-xs">DELETE ALL</button>
+                        <button onclick="downloadPDF()" class="natural-btn bg-orange-500 text-white py-2 rounded-lg text-sm">PDF</button>
+                        <button onclick="sendWhatsApp()" class="natural-btn bg-emerald-600 text-white py-2 rounded-lg text-sm">WA</button>
+                        <button onclick="deleteAll()" class="natural-btn bg-red-600 text-white py-2 rounded-lg text-sm">CLR ALL</button>
                     </div>
-                    <button onclick="refresh()" class="w-full bg-black text-white py-4 mt-4 rounded-2xl natural-btn">SEARCH DATA 🔎</button>
+                    <button onclick="refresh()" class="w-full bg-slate-800 text-white py-3 mt-4 rounded-xl natural-btn">APPLY FILTER 🔎</button>
                 </div>
             </div>
 
-            <div class="mt-6 bg-white border-4 border-black rounded-3xl overflow-hidden shadow-xl">
-                <table class="w-full">
-                    <thead class="bg-black text-white">
-                        <tr><th class="p-3">DATE</th><th class="p-3">MOBILE</th><th class="p-3">CAT</th><th class="p-3">REMARK</th><th class="p-3">AMT</th><th class="p-3">⚙️</th></tr>
+            <div class="mt-6 bg-white border-2 border-black rounded-xl overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-900 text-white">
+                        <tr>
+                            <th class="p-3">DATE</th><th class="p-3">MOBILE</th><th class="p-3">CAT</th><th class="p-3">REMARK</th><th class="p-3">AMT</th><th class="p-3">X</th>
+                        </tr>
                     </thead>
-                    <tbody id="resTable" class="text-center"></tbody>
+                    <tbody id="resTable" class="text-center divide-y divide-gray-200"></tbody>
                 </table>
             </div>
         </div>
@@ -106,104 +131,95 @@
 </div>
 
 <div id="genModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-    <div class="cp-card max-h-[90vh] overflow-y-auto">
-        <h2 class="text-2xl font-bold border-b-4 border-blue-600 mb-4">GENERAL SETTINGS</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="setting-row"><span>App Name</span><input type="text" id="setTitle" class="border-2 border-black px-2 w-32"></div>
-            <div class="setting-row"><span>Banner Color</span><input type="color" id="setHeadCol"></div>
-            <div class="setting-row"><span>Name Color</span><input type="color" id="setNameCol"></div>
-            <div class="setting-row"><span>Outline Color</span><input type="color" id="setOutCol"></div>
-            <div class="setting-row"><span>Entry Box Color</span><input type="color" id="setPatEnCol"></div>
-            <div class="setting-row"><span>Dashboard Color</span><input type="color" id="setPatDashCol"></div>
+    <div class="bg-white w-full max-w-lg p-6 rounded-3xl border-8 border-black">
+        <h2 class="text-xl font-bold mb-4 border-b-4 border-blue-600">UI SETTINGS</h2>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+            <div class="flex flex-col"><span>User Name</span><input type="text" id="setTitle" class="border-2 border-black p-1"></div>
+            <div class="flex flex-col"><span>Header Color</span><input type="color" id="setHeadCol"></div>
+            <div class="flex flex-col"><span>Text Color</span><input type="color" id="setNameCol"></div>
+            <div class="flex flex-col"><span>Outline Color</span><input type="color" id="setOutCol"></div>
         </div>
-        <div id="catEditArea" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-2"></div>
+        <div id="catEditArea" class="mt-4 grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 border"></div>
         <div class="flex gap-4 mt-6">
-            <button onclick="saveGeneral()" class="flex-1 bg-green-600 text-white py-4 rounded-xl natural-btn">SAVE ALL</button>
-            <button onclick="closeModals()" class="flex-1 bg-red-600 text-white py-4 rounded-xl natural-btn">CLOSE</button>
+            <button onclick="saveGeneral()" class="flex-1 bg-green-600 text-white py-3 rounded-xl natural-btn">SAVE</button>
+            <button onclick="closeModals()" class="flex-1 bg-gray-500 text-white py-3 rounded-xl natural-btn">CLOSE</button>
         </div>
     </div>
 </div>
 
 <div id="passModal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-    <div class="cp-card max-w-md">
-        <h2 class="text-2xl font-bold border-b-4 border-red-600 mb-4">SECURITY CONTROL</h2>
+    <div class="bg-white w-full max-w-xs p-6 rounded-3xl border-8 border-black">
+        <h2 class="text-xl font-bold mb-4 border-b-4 border-red-600">SECURITY</h2>
         <div class="space-y-4">
-            <div class="setting-row"><span>Admin PIN</span><input type="password" id="setAdminPin" class="w-24 text-center border-2 border-black"></div>
-            <div class="setting-row"><span>Login PIN</span><input type="password" id="setLoginPin" class="w-24 text-center border-2 border-black"></div>
-            <div class="setting-row"><span>Expiry Date</span><input type="text" id="setExpDate" disabled class="w-32 text-center bg-gray-200"></div>
-            <div class="setting-row"><span>Hide Balance</span><input type="checkbox" id="swHideBal" class="w-6 h-6"></div>
+            <input type="password" id="setAdminPin" placeholder="Admin PIN" class="w-full border-2 border-black p-2">
+            <input type="password" id="setLoginPin" placeholder="Login PIN" class="w-full border-2 border-black p-2">
+            <div class="flex items-center justify-between">
+                <span>Hide Total</span><input type="checkbox" id="swHideBal" class="w-6 h-6">
+            </div>
         </div>
-        <div class="flex gap-4 mt-6">
-            <button onclick="savePassword()" class="flex-1 bg-blue-600 text-white py-4 rounded-xl natural-btn">UPDATE PIN</button>
-            <button onclick="closeModals()" class="flex-1 bg-red-600 text-white py-4 rounded-xl natural-btn">CLOSE</button>
-        </div>
+        <button onclick="savePassword()" class="w-full bg-blue-600 text-white py-3 mt-6 rounded-xl natural-btn">UPDATE</button>
     </div>
 </div>
 
 <script>
-// எக்ஸ்பயரி டேட் லாஜிக் (மாற்ற வேண்டாம்)
-const GLOBAL_EXPIRY = "2026-04-30"; 
+const GLOBAL_EXPIRY = "2026-12-31"; 
 
-let cfg = JSON.parse(localStorage.getItem('saha_v7_cfg')) || {
-    "title":"SAHAYARAJ-2026", "headCol":"#0c40bb", "nameCol":"#ffffff", "outCol":"#54301d", "btmCol":"#0b08d4",
-    "patEnCol":"#ffffff", "patDashCol":"#f1f5f9",
-    "adminPin":"1020", "loginPin":"1002", "expiryDate": GLOBAL_EXPIRY, "startingDate":"", "driveUrl":"",
+let cfg = JSON.parse(localStorage.getItem('ind_cfg_2026')) || {
+    "title":"INDIAN", "headCol":"#1e1b4b", "nameCol":"#ffffff", "outCol":"#dc2626",
+    "patEnCol":"#ffffff", "patDashCol":"#f8fafc",
+    "adminPin":"1020", "loginPin":"1002", "startingDate":"", "driveUrl":"",
     "hideBal": false,
     "cats":["TICKET","FINANCE","RO","OTHER","SHOP","GENERAL","EXTRA"],
-    "catStatus":[true,true,true,true,true,true,true]
 };
 
-let db = JSON.parse(localStorage.getItem('saha_v7_db')) || [];
+let db = JSON.parse(localStorage.getItem('ind_db_2026')) || [];
 let activeFilters = [];
 let filteredGlobal = [];
 
-function checkExpiry() {
-    const today = new Date();
-    const expDate = new Date(GLOBAL_EXPIRY);
-    if (today > expDate) {
-        document.getElementById('mainSaveBtn').disabled = true;
-        document.getElementById('expiryBanner').style.display = 'block';
-        return true;
-    }
-    return false;
+function updateClock() {
+    const now = new Date();
+    const d = String(now.getDate()).padStart(2, '0');
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const y = now.getFullYear();
+    const t = now.toLocaleTimeString('en-GB');
+    document.getElementById('liveClock').innerText = `${d}/${m}/${y} | ${t}`;
 }
 
 function init() {
-    checkExpiry();
-    document.documentElement.style.setProperty('--p-bg', cfg.headCol);
-    document.documentElement.style.setProperty('--n-col', cfg.nameCol);
-    document.documentElement.style.setProperty('--out', cfg.outCol);
-    document.documentElement.style.setProperty('--btm', cfg.btmCol);
-    document.documentElement.style.setProperty('--pat-en', cfg.patEnCol);
-    document.documentElement.style.setProperty('--pat-dash', cfg.patDashCol);
-    
-    document.getElementById('dispTitle').innerText = cfg.title;
-    document.getElementById('mainTotal').style.display = cfg.hideBal ? 'none' : 'block';
-    
-    if(cfg.startingDate) document.getElementById('startDateDisplay').innerText = "FROM: " + cfg.startingDate.split('-').reverse().join('/');
-    
+    setInterval(updateClock, 1000);
+    applyStyles();
     renderUI();
     refresh();
 }
 
+function applyStyles() {
+    document.documentElement.style.setProperty('--p-bg', cfg.headCol);
+    document.documentElement.style.setProperty('--n-col', cfg.nameCol);
+    document.documentElement.style.setProperty('--out', cfg.outCol);
+    document.getElementById('dispTitle').innerText = cfg.title;
+    document.getElementById('mainTotal').style.visibility = cfg.hideBal ? 'hidden' : 'visible';
+    if(cfg.startingDate) {
+        const [y, m, d] = cfg.startingDate.split('-');
+        document.getElementById('startDateDisplay').innerText = `SINCE: ${d}/${m}/${y}`;
+    }
+}
+
 function renderUI() {
-    const grid = document.getElementById('catGrid'), eSel = document.getElementById('eCat'), fList = document.getElementById('filterCatList');
-    grid.innerHTML = ""; eSel.innerHTML = ""; 
-    fList.innerHTML = `<button onclick="toggleFilter('ALL')" id="btn_ALL" class="bg-black text-white px-4 py-2 rounded-xl natural-btn text-xs">ALL</button>`;
-    cfg.cats.forEach((c, i) => {
-        if(cfg.catStatus[i]) {
-            grid.innerHTML += `<div class="cat-card"><p class="text-xs pt-2" style="color:var(--c-let)">${c}</p><h3 class="text-xl pb-2" style="color:var(--c-num)">₹<span id="sum_${c}">0</span></h3></div>`;
-            eSel.innerHTML += `<option value="${c}">${c}</option>`;
-            fList.innerHTML += `<button onclick="toggleFilter('${c}')" id="btn_${c}" class="bg-blue-800 text-white px-4 py-2 rounded-xl natural-btn text-xs">${c}</button>`;
-        }
+    const eSel = document.getElementById('eCat'), fList = document.getElementById('filterCatList');
+    eSel.innerHTML = ""; 
+    fList.innerHTML = `<button onclick="toggleFilter('ALL')" id="btn_ALL" class="bg-black text-white px-3 py-1 rounded-lg text-[10px] natural-btn">ALL</button>`;
+    
+    cfg.cats.forEach((c) => {
+        eSel.innerHTML += `<option value="${c}">${c}</option>`;
+        fList.innerHTML += `<button onclick="toggleFilter('${c}')" id="btn_${c}" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-[10px] natural-btn">${c}</button>`;
     });
 }
 
 function refresh() {
     db.sort((a, b) => new Date(b.date) - new Date(a.date));
-
     const fD = document.getElementById('fDate').value, tD = document.getElementById('tDate').value, sM = document.getElementById('sMob').value;
-    let html = "", grand = 0;
+    
+    let grand = 0;
     let catSums = {}; cfg.cats.forEach(c => catSums[c] = 0);
 
     filteredGlobal = db.filter(t => {
@@ -214,40 +230,52 @@ function refresh() {
         return mBell && mCat && mDate && mMob;
     });
 
+    let html = "";
     filteredGlobal.forEach(t => {
         let v = (t.type === "CR") ? parseFloat(t.amt) : -parseFloat(t.amt);
-        catSums[t.cat] += v; grand += v;
-        html += `<tr class="border-b-2 border-gray-200">
-            <td class="p-3 text-xs">${t.date.split('-').reverse().join('/')}</td>
-            <td class="p-3 text-xs">${t.mob}</td>
-            <td class="p-3 text-xs font-bold">${t.cat}</td>
-            <td class="p-3 text-xs text-blue-800">${t.desc}</td>
-            <td class="p-3 text-right font-bold ${t.type==='CR'?'text-green-600':'text-red-600'}">₹${parseFloat(t.amt).toLocaleString()}</td>
-            <td class="p-3"><button onclick="del(${t.id})" class="text-red-600">✖</button></td>
+        catSums[t.cat] += v; 
+        grand += v;
+        html += `<tr>
+            <td class="p-2">${t.date.split('-').reverse().join('/')}</td>
+            <td class="p-2">${t.mob}</td>
+            <td class="p-2 font-bold">${t.cat}</td>
+            <td class="p-2 text-gray-600">${t.desc}</td>
+            <td class="p-2 font-black ${t.type==='CR'?'text-green-600':'text-red-600'}">₹${t.amt}</td>
+            <td class="p-2"><button onclick="del(${t.id})" class="text-red-500">×</button></td>
         </tr>`;
+    });
+
+    // Update Category Dashboard (Only show categories with balance or transactions)
+    const grid = document.getElementById('catGrid');
+    grid.innerHTML = "";
+    cfg.cats.forEach(c => {
+        if(catSums[c] !== 0) {
+            grid.innerHTML += `
+            <div class="cat-card">
+                <p class="text-[10px] uppercase text-gray-500">${c}</p>
+                <h3 class="text-lg font-black text-blue-900">₹${catSums[c].toLocaleString()}</h3>
+            </div>`;
+        }
     });
 
     document.getElementById('resTable').innerHTML = html;
     document.getElementById('mainTotal').innerText = "₹" + grand.toLocaleString();
     document.getElementById('recCount').innerText = filteredGlobal.length;
-    cfg.cats.forEach(c => { if(document.getElementById('sum_'+c)) document.getElementById('sum_'+c).innerText = (catSums[c] || 0).toLocaleString(); });
 }
 
 function saveData() {
-    if(checkExpiry()) {
-        alert("உங்கள் ஸ்கிரிப்ட் காலாவதியாகிவிட்டது! சேமிக்க முடியாது.");
-        return;
-    }
-
     const d = document.getElementById('eDate').value, a = document.getElementById('eAmt').value;
-    if(!d || !a) return alert("தேதி மற்றும் தொகையை நிரப்பவும்!");
+    if(!d || !a) return alert("Fill Date & Amount!");
     
-    let entry = { id: Date.now(), date: d, mob: document.getElementById('eMob').value || "-", cat: document.getElementById('eCat').value, desc: document.getElementById('eDesc').value || "-", amt: a, type: document.getElementById('eType').value };
+    let entry = { 
+        id: Date.now(), date: d, 
+        mob: document.getElementById('eMob').value || "-", 
+        cat: document.getElementById('eCat').value, 
+        desc: document.getElementById('eDesc').value || "-", 
+        amt: a, type: document.getElementById('eType').value 
+    };
     db.push(entry);
-    localStorage.setItem('saha_v7_db', JSON.stringify(db));
-    
-    if(cfg.driveUrl) syncToDrive(entry);
-    
+    localStorage.setItem('ind_db_2026', JSON.stringify(db));
     refresh();
     document.getElementById('eAmt').value = ""; document.getElementById('eDesc').value = "";
 }
@@ -255,32 +283,18 @@ function saveData() {
 function downloadPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.setFontSize(20); doc.text(cfg.title, 14, 15);
-    doc.setFontSize(10); doc.text(`Generated on: ${new Date().toLocaleDateString('en-GB')}`, 14, 22);
+    doc.setFontSize(18); doc.text(cfg.title + " REPORT", 14, 20);
+    doc.setFontSize(10); doc.text(`Printed: ${new Date().toLocaleString('en-GB')}`, 14, 28);
     
+    // In PDF, we only show what is currently filtered in the dashboard
     doc.autoTable({ 
-        head: [['DATE', 'MOBILE', 'CAT', 'REMARK', 'AMOUNT', 'TYPE']], 
-        body: filteredGlobal.map(t => [t.date.split('-').reverse().join('/'), t.mob, t.cat, t.desc, t.amt, t.type]),
-        startY: 30 
+        head: [['DATE', 'CAT', 'REMARK', 'AMOUNT', 'TYPE']], 
+        body: filteredGlobal.map(t => [t.date.split('-').reverse().join('/'), t.cat, t.desc, t.amt, t.type]),
+        startY: 35,
+        theme: 'grid',
+        headStyles: { fillColor: [30, 27, 75] }
     });
-    doc.save(`${cfg.title}_Filtered.pdf`);
-}
-
-function sendWhatsApp() {
-    let total = document.getElementById('mainTotal').innerText;
-    let msg = `*${cfg.title} REPORT*\nTotal: ${total}\nRecords: ${filteredGlobal.length}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-}
-
-function linkDrive() {
-    let url = prompt("Google Apps Script URL-ஐ இங்கே பேஸ்ட் செய்யவும்:", cfg.driveUrl);
-    if(url !== null) { cfg.driveUrl = url; localStorage.setItem('saha_v7_cfg', JSON.stringify(cfg)); alert("Drive Linked!"); }
-}
-
-async function syncToDrive(data) {
-    try {
-        await fetch(cfg.driveUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-    } catch(e) { console.log("Sync Error"); }
+    doc.save(`${cfg.title}_Statement.pdf`);
 }
 
 function openGeneralSettings() {
@@ -289,12 +303,10 @@ function openGeneralSettings() {
     document.getElementById('setHeadCol').value = cfg.headCol;
     document.getElementById('setNameCol').value = cfg.nameCol;
     document.getElementById('setOutCol').value = cfg.outCol;
-    document.getElementById('setPatEnCol').value = cfg.patEnCol;
-    document.getElementById('setPatDashCol').value = cfg.patDashCol;
     
     let area = document.getElementById('catEditArea'); area.innerHTML = "";
     cfg.cats.forEach((c, i) => {
-        area.innerHTML += `<div class="setting-row"><span>A${i+1} Name</span><input type="text" id="cn_${i}" value="${c}" class="w-20 border-2 border-black px-1 uppercase text-xs"></div>`;
+        area.innerHTML += `<input type="text" id="cn_${i}" value="${c}" class="border border-black p-1 uppercase text-[10px]">`;
     });
 }
 
@@ -303,10 +315,8 @@ function saveGeneral() {
     cfg.headCol = document.getElementById('setHeadCol').value;
     cfg.nameCol = document.getElementById('setNameCol').value;
     cfg.outCol = document.getElementById('setOutCol').value;
-    cfg.patEnCol = document.getElementById('setPatEnCol').value;
-    cfg.patDashCol = document.getElementById('setPatDashCol').value;
     cfg.cats.forEach((_, i) => { cfg.cats[i] = document.getElementById(`cn_${i}`).value.toUpperCase(); });
-    localStorage.setItem('saha_v7_cfg', JSON.stringify(cfg));
+    localStorage.setItem('ind_cfg_2026', JSON.stringify(cfg));
     location.reload();
 }
 
@@ -315,7 +325,6 @@ function openPasswordSettings() {
         document.getElementById('passModal').classList.remove('hidden');
         document.getElementById('setAdminPin').value = cfg.adminPin;
         document.getElementById('setLoginPin').value = cfg.loginPin;
-        document.getElementById('setExpDate').value = GLOBAL_EXPIRY.split('-').reverse().join('/');
         document.getElementById('swHideBal').checked = cfg.hideBal;
     }
 }
@@ -324,14 +333,14 @@ function savePassword() {
     cfg.adminPin = document.getElementById('setAdminPin').value;
     cfg.loginPin = document.getElementById('setLoginPin').value;
     cfg.hideBal = document.getElementById('swHideBal').checked;
-    localStorage.setItem('saha_v7_cfg', JSON.stringify(cfg));
-    alert("Security Settings Updated!");
+    localStorage.setItem('ind_cfg_2026', JSON.stringify(cfg));
+    alert("Updated!");
     location.reload();
 }
 
 function setStartingDate() { 
     let v = document.getElementById('bellStartDate').value; 
-    if(v) { cfg.startingDate = v; localStorage.setItem('saha_v7_cfg', JSON.stringify(cfg)); init(); } 
+    if(v) { cfg.startingDate = v; localStorage.setItem('ind_cfg_2026', JSON.stringify(cfg)); init(); } 
 }
 
 function toggleFilter(cat) { 
@@ -341,8 +350,17 @@ function toggleFilter(cat) {
 }
 
 function closeModals() { document.querySelectorAll('.fixed').forEach(m => m.classList.add('hidden')); }
-function del(id) { if(confirm("நீக்கலாமா?")) { db = db.filter(x => x.id !== id); localStorage.setItem('saha_v7_db', JSON.stringify(db)); refresh(); } }
-function deleteAll() { if(confirm("அனைத்தையும் நீக்கவா?")) { db = []; localStorage.setItem('saha_v7_db', JSON.stringify(db)); refresh(); } }
+function del(id) { if(confirm("Delete?")) { db = db.filter(x => x.id !== id); localStorage.setItem('ind_db_2026', JSON.stringify(db)); refresh(); } }
+function deleteAll() { if(confirm("Clear All Data?")) { db = []; localStorage.setItem('ind_db_2026', JSON.stringify(db)); refresh(); } }
+function sendWhatsApp() {
+    let total = document.getElementById('mainTotal').innerText;
+    let msg = `*${cfg.title} REPORT*\nBalance: ${total}\nRecords: ${filteredGlobal.length}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function linkDrive() {
+    let url = prompt("Google Script URL:", cfg.driveUrl);
+    if(url !== null) { cfg.driveUrl = url; localStorage.setItem('ind_cfg_2026', JSON.stringify(cfg)); alert("Linked!"); }
+}
 </script>
 </body>
 </html>
