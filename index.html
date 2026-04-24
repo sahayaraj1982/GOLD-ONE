@@ -5,61 +5,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAHAYARAJ-2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
-        body{background:#475569;font-family:Arial Black,sans-serif;}
-        *{font-weight:900!important;}
-        .btn-style{border-bottom:6px solid rgba(0,0,0,0.4);color:#fff!important;cursor:pointer;}
-        .main-app-box{border:10px solid #54301d;margin:10px auto;border-radius:40px;background:#f1f5f9;width:95%;}
+        :root { --p-bg: #0c40bb; --n-col: #ffffff; --out: #54301d; --btm: #0b08d4; --c-let: #e32b2b; --c-num: #1e40af; }
+        body { background-color: #475569; font-family: 'Arial Black', sans-serif; overflow-x: hidden; }
+        * { font-weight: 950 !important; }
+        .main-app-box { border: 10px solid var(--out); margin: 10px auto; border-radius: 40px; background: #f1f5f9; overflow-x: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .premium-header { background-color: var(--p-bg); padding: 25px; border-bottom: 10px solid var(--btm); position: relative; }
+        .cat-card { background: #fff; border: 4px solid var(--out); border-radius: 20px; text-align: center; padding: 15px 10px; position: relative; box-shadow: 8px 8px 0px var(--out); transition: 0.2s; cursor: pointer; }
+        .cat-card:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0px var(--out); }
+        .btn-style { border-bottom: 6px solid rgba(0,0,0,0.4); color: #fff !important; cursor: pointer; transition: 0.1s; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .btn-style:active { transform: translateY(3px); border-bottom-width: 3px; }
+        .cp-card { background: #fff; width: 98%; max-width: 1300px; border-radius: 40px; padding: 20px; border: 10px solid #000; max-height: 95vh; overflow-y: auto; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 4px 10px; border: 2px solid #000; border-radius: 10px; margin-bottom: 2px; font-size: 11px; }
+        .setting-row input { border: 1px solid #ccc; text-align: center; border-radius: 5px; }
+        .filter-btn-active { background-color: #ef4444 !important; border: 3px solid #000 !important; box-shadow: none !important; transform: translateY(2px); }
+        .section-title { background: #1e3a8a; color: white; padding: 2px 10px; font-size: 10px; text-transform: uppercase; margin-top: 10px; }
+        .action-bar { display: flex; width: 100%; background: #000; padding: 8px; gap: 8px; }
+        .action-btn { flex: 1; padding: 12px 0; border: 3px solid #fff; color: #fff; font-size: 14px; text-align: center; cursor: pointer; border-radius: 12px; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 #444; }
+        .action-btn.active { background: #ffeb3b; color: #000; border-color: #000; box-shadow: none; transform: translateY(4px); }
+        .bell-btn { background: #facc15; color: #000; }
     </style>
 </head>
 <body onload="checkLogin()">
 
-<!-- LOGIN PAGE -->
-<div id="loginPage" class="fixed inset-0 bg-slate-900 flex items-center justify-center z-50">
+<div id="loginPage" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
     <div class="bg-white p-8 rounded-3xl border-4 border-black shadow-2xl w-[350px]">
-        <h2 class="text-2xl text-center mb-6">USER LOGIN</h2>
-
-        <input type="text" id="loginUser" placeholder="User ID"
-            class="w-full border-2 border-black p-3 rounded-xl mb-4">
-
-        <input type="password" id="loginPass" placeholder="Password"
-            class="w-full border-2 border-black p-3 rounded-xl mb-4">
-
-        <button onclick="loginUserCheck()"
-            class="w-full bg-blue-700 text-white py-3 rounded-xl btn-style">
-            LOGIN
-        </button>
+        <h2 class="text-2xl text-center mb-6 uppercase">User Login</h2>
+        <input type="text" id="loginUser" placeholder="User ID" class="w-full border-2 border-black p-3 rounded-xl mb-4">
+        <input type="password" id="loginPass" placeholder="Password" class="w-full border-2 border-black p-3 rounded-xl mb-4">
+        <button onclick="loginUserCheck()" class="w-full bg-blue-700 text-white py-3 rounded-xl btn-style">LOGIN</button>
     </div>
 </div>
 
-<!-- APP PAGE -->
 <div id="appPage" style="display:none;">
-    <div class="main-app-box p-10">
-        <h1 class="text-4xl text-center text-blue-800 mb-6">SAHAYARAJ-2026</h1>
-
-        <div class="grid grid-cols-2 gap-4 mb-4">
-            <input type="date" id="eDate" class="border-2 border-black p-3 rounded-xl">
-            <input type="number" id="eAmt" placeholder="Amount" class="border-2 border-black p-3 rounded-xl">
-            <input type="text" id="eCat" placeholder="Category" class="border-2 border-black p-3 rounded-xl">
-            <input type="text" id="eDesc" placeholder="Remark" class="border-2 border-black p-3 rounded-xl">
+    <div id="mainContainer" class="main-app-box mx-auto">
+        <div class="premium-header">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <button id="backBtn" onclick="location.reload()" class="bg-red-600 w-12 h-12 rounded-full border-4 border-black text-white text-2xl shadow-lg">⬅</button>
+                    <div>
+                        <h1 id="dispTitle" class="text-4xl italic uppercase" style="color: var(--n-col); text-shadow: 3px 3px 0 #000;">SAHAYARAJ-2026</h1>
+                        <div id="liveDateTime" class="text-yellow-300 font-bold" style="font-size: 14px;"></div>
+                        <p id="startDateDisplay" class="mb-1"></p>
+                        <p id="expiryDisplay" class="mt-1"></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="text-right text-white">
+                        <p class="text-xs opacity-70">RECORDS: <span id="recCount" class="text-yellow-400">0</span></p>
+                        <h2 id="mainTotal" class="text-4xl" style="text-shadow: 2px 2px 0 #000;">₹0</h2>
+                    </div>
+                    <button onclick="openSettings()" class="text-5xl text-white hover:rotate-90 transition-transform">⚙️</button>
+                </div>
+            </div>
         </div>
 
-        <button onclick="saveData()" class="w-full bg-green-600 py-3 rounded-xl btn-style text-xl">
-            SAVE
-        </button>
+        <div class="action-bar">
+            <div class="action-btn bell-btn" onclick="document.getElementById('bellStartDate').showPicker()">🔔 BELL
+                <input type="date" id="bellStartDate" onchange="setStartingDate()" class="absolute opacity-0 pointer-events-none w-0">
+            </div>
+            <div id="viewCR" onclick="setViewMode('CR')" class="action-btn active">CREDIT (+)</div>
+            <div id="viewDR" onclick="setViewMode('DR')" class="action-btn">DEBIT (-)</div>
+            <div id="viewBOTH" onclick="setViewMode('BOTH')" class="action-btn">BOTH</div>
+        </div>
 
-        <div class="mt-8">
-            <table class="w-full bg-white border-2 border-black">
-                <thead class="bg-black text-white">
-                    <tr>
-                        <th class="p-3">DATE</th>
-                        <th class="p-3">CATEGORY</th>
-                        <th class="p-3">REMARK</th>
-                        <th class="p-3">AMOUNT</th>
-                    </tr>
-                </thead>
-                <tbody id="resTable"></tbody>
-            </table>
+        <div class="p-4">
+            <div id="catGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-5 mb-4"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-3xl border-4 border-black shadow-[10px_10px_0px_#000]">
+                    <h3 class="text-xl border-b-4 border-green-600 mb-4 italic uppercase">New Entry</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="date" id="eDate" class="border-2 border-black p-3 rounded-xl">
+                        <input type="tel" id="eMob" placeholder="Mobile" class="border-2 border-black p-3 rounded-xl">
+                        <select id="eCat" class="border-2 border-black p-3 rounded-xl"></select>
+                        <input type="text" id="eDesc" placeholder="Remark" class="border-2 border-black p-3 rounded-xl">
+                        <input type="number" id="eAmt" placeholder="Amount" class="border-2 border-black p-3 rounded-xl">
+                        <select id="eType" class="border-2 border-black p-3 rounded-xl"><option value="CR">IN (+)</option><option value="DR">OUT (-)</option></select>
+                    </div>
+                    <button onclick="saveData()" id="saveBtn" class="w-full py-4 mt-6 rounded-xl text-xl btn-style bg-green-600">SAVE ✅</button>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border-4 border-black shadow-[10px_10px_0px_#000]">
+                    <h3 class="text-xl border-b-4 border-blue-600 mb-4 italic uppercase">Search & Tools</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+                        <input type="date" id="fDate" class="text-xs border-2 border-black p-2">
+                        <input type="date" id="tDate" class="text-xs border-2 border-black p-2">
+                        <input type="tel" id="sMob" placeholder="Mobile" class="text-xs border-2 border-black p-2">
+                        <input type="text" id="sDesc" placeholder="Remark Search" class="text-xs border-2 border-black p-2">
+                    </div>
+                    <div id="filterCatList" class="flex flex-wrap gap-2 mb-4"></div>
+                    <button onclick="refresh()" class="w-full bg-slate-800 text-white py-4 mt-4 rounded-xl btn-style">SEARCH DATA 🔎</button>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-white border-4 border-black rounded-3xl overflow-hidden shadow-2xl">
+                <table class="w-full text-sm">
+                    <thead class="bg-black text-white"><tr><th class="p-3">DATE</th><th class="p-3">MOBILE</th><th class="p-3">CAT</th><th class="p-3">REMARK</th><th class="p-3 text-right">AMOUNT</th></tr></thead>
+                    <tbody id="resTable" class="text-center"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -73,77 +120,88 @@ let users = JSON.parse(localStorage.getItem('saha_users')) || [
     { id: "user5", pass: "5555", expiry: "2026-12-31" }
 ];
 
-let db = JSON.parse(localStorage.getItem('saha_db')) || [];
+let cfg = JSON.parse(localStorage.getItem('saha_v66_cfg')) || {
+    title:"SAHAYARAJ-2026",
+    cats:["FOOD","SHOP","BILL"]
+};
+
+let db = JSON.parse(localStorage.getItem('saha_v66_db')) || [];
+let currentViewMode = "CR";
 
 function checkLogin(){
-    document.getElementById("appPage").style.display="none";
+    document.getElementById("appPage").style.display = "none";
 }
 
 function loginUserCheck(){
-    let uid=document.getElementById("loginUser").value.trim();
-    let pwd=document.getElementById("loginPass").value.trim();
+    let uid = document.getElementById("loginUser").value.trim();
+    let pwd = document.getElementById("loginPass").value.trim();
+    let user = users.find(u => u.id === uid && u.pass === pwd);
+    if(!user){ alert("INVALID USER ID OR PASSWORD"); return; }
+    let today = new Date().toISOString().split("T")[0];
+    if(today > user.expiry){ alert("ACCOUNT EXPIRED"); return; }
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("appPage").style.display = "block";
+    init();
+}
 
-    let user=users.find(u=>u.id===uid && u.pass===pwd);
-
-    if(!user){
-        alert("INVALID USER ID OR PASSWORD");
-        return;
-    }
-
-    let today=new Date().toISOString().split("T")[0];
-
-    if(today>user.expiry){
-        alert("ACCOUNT EXPIRED");
-        return;
-    }
-
-    document.getElementById("loginPage").style.display="none";
-    document.getElementById("appPage").style.display="block";
+function init(){
+    renderUI();
     refresh();
 }
 
-function saveData(){
-    let date=document.getElementById("eDate").value;
-    let amt=document.getElementById("eAmt").value;
-    let cat=document.getElementById("eCat").value;
-    let desc=document.getElementById("eDesc").value;
-
-    if(!date || !amt){
-        alert("DATE AND AMOUNT REQUIRED");
-        return;
-    }
-
-    db.push({
-        date:date,
-        amt:amt,
-        cat:cat,
-        desc:desc
+function renderUI(){
+    const grid = document.getElementById('catGrid');
+    const eSel = document.getElementById('eCat');
+    const fList = document.getElementById('filterCatList');
+    grid.innerHTML = "";
+    eSel.innerHTML = "";
+    fList.innerHTML = "";
+    cfg.cats.forEach(c=>{
+        grid.innerHTML += `<div class="cat-card"><p>${c}</p><h3>₹<span id="sum_${c}">0</span></h3></div>`;
+        eSel.innerHTML += `<option value="${c}">${c}</option>`;
+        fList.innerHTML += `<button class="bg-blue-700 text-white px-3 py-1 rounded">${c}</button>`;
     });
+}
 
-    localStorage.setItem("saha_db",JSON.stringify(db));
-
-    document.getElementById("eAmt").value="";
-    document.getElementById("eCat").value="";
-    document.getElementById("eDesc").value="";
-
+function saveData(){
+    const d = eDate.value;
+    const a = eAmt.value;
+    if(!d || !a) return;
+    db.push({
+        date:d,
+        mob:eMob.value || "-",
+        cat:eCat.value,
+        desc:eDesc.value || "-",
+        amt:a,
+        type:eType.value
+    });
+    localStorage.setItem('saha_v66_db', JSON.stringify(db));
+    eAmt.value='';
+    eDesc.value='';
     refresh();
 }
 
 function refresh(){
-    let html="";
-
+    let html = "", grand = 0;
     db.forEach(t=>{
-        html+=`
-        <tr class="border-b text-center">
+        let amt = parseFloat(t.amt)||0;
+        grand += t.type==="CR"?amt:-amt;
+        html += `<tr class="border-b">
             <td class="p-3">${t.date}</td>
+            <td class="p-3">${t.mob}</td>
             <td class="p-3">${t.cat}</td>
             <td class="p-3">${t.desc}</td>
-            <td class="p-3">₹${t.amt}</td>
+            <td class="p-3 text-right">₹${amt}</td>
         </tr>`;
     });
-
-    document.getElementById("resTable").innerHTML=html;
+    resTable.innerHTML = html;
+    mainTotal.innerText = "₹"+grand;
+    recCount.innerText = db.length;
 }
+
+function openSettings(){ alert("Settings Enabled"); }
+function setViewMode(mode){ currentViewMode = mode; }
+function setStartingDate(){}
 </script>
 
 </body>
