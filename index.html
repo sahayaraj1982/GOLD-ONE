@@ -13,10 +13,7 @@
         }
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            color: #333;
+            background-color: var(--bg-color); margin: 0; padding: 20px; color: #333;
         }
         .container { max-width: 1200px; margin: 0 auto; }
         .header-bar {
@@ -127,8 +124,8 @@
 </div>
 
 <script>
-    // ⚠️ நீங்கள் கொடுத்த புதிய சரியான வெப் ஆப் URL இதோ நேரடியாக இணைக்கப்பட்டுள்ளது:
-    const API_URL = "https://script.google.com/macros/s/AKfycby8IBs9NX-eYtAEkkSFEkLyG3VxmCqsrdSMQrjuxlZ6ZZ3E-tbloG37lD4EjNz7TLcmCA/exec";
+    // ⚠️ உங்களின் புதிய கூகுள் வெப் ஆப்ஸ் ஸ்கிரிப்ட் URL-ஐ கீழே மாற்றவும்
+    const API_URL = "https://script.google.com/macros/s/AKfycbzklDgIOOtjnUwRrlul99a16wKlknXfqldJWeorfZwpwz5lA13shlCL5JWcQiuZVcE3rg/exec";
     const MASTER_PASS = "admin123"; 
 
     function checkLogin() {
@@ -162,7 +159,6 @@
         } else { indicator.style.display = "none"; txt.innerText = ""; }
     }
 
-    // கூகுள் ஷீட்டில் இருந்து பயனர்கள் பட்டியலைப் பெறும் செயல்பாடு
     function fetchUsers() {
         showLoading(true);
         const script = document.createElement('script');
@@ -173,12 +169,10 @@
             document.getElementById('userTableBody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--danger-color); font-weight:bold;">தரவுகளைப் பெற முடியவில்லை. கூகுள் செட்டிங்ஸை சரிபார்க்கவும்!</td></tr>`;
             showLoading(false);
         };
-        
         document.body.appendChild(script);
         document.body.removeChild(script);
     }
 
-    // பெற்ற தரவுகளை அட்டவணையில் காண்பித்தல்
     function handleUserData(data) {
         const tbody = document.getElementById('userTableBody');
         tbody.innerHTML = "";
@@ -212,7 +206,6 @@
         showLoading(false);
     }
 
-    // படிவத்தைச் சமர்ப்பிக்கும் போது (Create / Update) இயங்கும் செயல்பாடு
     function handleFormSubmit(e) {
         e.preventDefault();
         showLoading(true);
@@ -229,10 +222,9 @@
         script.src = `${API_URL}?action=${actionType}&username=${username}&password=${password}&expiredDate=${expiredDate}&url=${url}&callback=handleFormResponse&t=${new Date().getTime()}`;
         
         script.onerror = function() {
-            alert("செயல்பாட்டில் தோல்வி! மீண்டும் முயற்சிக்கவும்.");
+            alert("செயல்பாட்டில் தோல்வி!");
             showLoading(false);
         };
-
         document.body.appendChild(script);
         document.body.removeChild(script);
     }
@@ -268,12 +260,6 @@
             showLoading(true);
             const script = document.createElement('script');
             script.src = `${API_URL}?action=deleteUser&username=${encodeURIComponent(username)}&callback=handleFormResponse&t=${new Date().getTime()}`;
-            
-            script.onerror = function() {
-                alert("பயனரை நீக்குவதில் சிக்கல்!");
-                showLoading(false);
-            };
-
             document.body.appendChild(script);
             document.body.removeChild(script);
         }
