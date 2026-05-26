@@ -3,220 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAHAYARAJ-2026</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <title>அக்கவுண்ட் மேனேஜர் - அட்மின் பேனல்</title>
     <style>
-        :root { --p-bg:#0c40bb; --n-col:#ffffff; --out:#54301d; --btm:#0b08d4; --c-let:#e32b2b; --c-num:#1e40af; }
-        body { background-color:#475569; font-family:'Arial Black',sans-serif; overflow-x:hidden; }
-        * { font-weight:950!important; }
-
-        .main-app-box { border:10px solid var(--out); margin:10px auto; border-radius:40px; background:#f1f5f9; overflow-x:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.5); }
-        .premium-header { background-color:var(--p-bg); padding:25px; border-bottom:10px solid var(--btm); }
-        .cat-card { background:#fff; border:4px solid var(--out); border-radius:20px; text-align:center; padding:15px 10px; box-shadow:8px 8px 0px var(--out); }
-        .btn-style { border-bottom:6px solid rgba(0,0,0,0.4); color:#fff!important; cursor:pointer; text-transform:uppercase; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
-        .action-bar { display:flex; width:100%; background:#000; padding:8px; gap:8px; }
-        .action-btn { flex:1; padding:12px 0; border:3px solid #fff; color:#fff; font-size:14px; text-align:center; cursor:pointer; border-radius:12px; }
-        .action-btn.active { background:#ffeb3b; color:#000; }
-        .bell-btn { background:#facc15; color:#000; }
+        :root {
+            --primary-color: #1a73e8;
+            --danger-color: #d93025;
+            --success-color: #1e8e3e;
+            --bg-color: #f8f9fa;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header-bar {
+            margin-bottom: 20px; background: white; padding: 15px 25px;
+            border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        h2 { margin-top: 0; color: #202124; border-bottom: 2px solid #f1f3f4; padding-bottom: 10px; }
+        .form-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        input, button { padding: 10px; border: 1px solid #dadce0; border-radius: 4px; font-size: 14px; box-sizing: border-box; width: 100%; }
+        input:focus { outline: none; border-color: var(--primary-color); }
+        button { background-color: var(--primary-color); color: white; border: none; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        button:hover { background-color: #1557b0; }
+        button.btn-danger { background-color: var(--danger-color); }
+        button.btn-danger:hover { background-color: #b31412; }
+        
+        .status-container { display: flex; align-items: center; }
+        .status-indicator { display: inline-block; width: 30px; height: 30px; border-radius: 50%; text-align: center; line-height: 30px; font-weight: bold; margin-right: 10px; color: white; }
+        .status-success { background-color: var(--success-color); box-shadow: 0 0 0 0 rgba(30, 142, 62, 0.7); animation: blink-green 1.5s infinite; }
+        .status-error { background-color: var(--danger-color); box-shadow: 0 0 0 0 rgba(217, 48, 37, 0.7); animation: blink-red 1.5s infinite; }
+        .status-text { font-size: 13px; font-weight: bold; margin-right: 15px; }
+        
+        @keyframes blink-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(30, 142, 62, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(30, 142, 62, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(30, 142, 62, 0); }
+        }
+        @keyframes blink-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 48, 37, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(217, 48, 37, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 48, 37, 0); }
+        }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f3f4; font-size: 14px; }
+        th { background-color: #f1f3f4; color: #5f6368; font-weight: 600; }
+        tr:hover { background-color: #f8f9fa; }
+        
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .login-box { text-align: center; padding: 40px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        .loading { display: none; color: var(--primary-color); font-weight: bold; margin-bottom: 15px; text-align: center; }
     </style>
 </head>
-<body onload="checkLogin()">
+<body>
 
-<!-- LOGIN PAGE -->
-<div id="loginPage" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-    <div class="bg-white p-8 rounded-3xl border-4 border-black shadow-2xl w-[350px]">
-        <h2 class="text-2xl text-center mb-6 uppercase">USER LOGIN</h2>
-        <input type="text" id="loginUser" placeholder="User ID" class="w-full border-2 border-black p-3 rounded-xl mb-4">
-        <input type="password" id="loginPass" placeholder="Password" class="w-full border-2 border-black p-3 rounded-xl mb-4">
-        <button onclick="loginUserCheck()" class="w-full bg-blue-700 text-white py-3 rounded-xl btn-style">LOGIN</button>
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2>அட்மின் லாகின்</h2>
+        <p>தொடர அட்மின் மாஸ்டர் பாஸ்வேர்டை உள்ளிடவும்</p>
+        <input type="password" id="masterPassword" placeholder="Master Password" style="margin-bottom: 15px;"><br>
+        <button onclick="checkLogin()">உள்ளே செல் (Login)</button>
+        <p id="loginError" style="color: red; display: none; margin-top: 10px;">தவறான பாஸ்வேர்டு!</p>
     </div>
 </div>
 
-<!-- APP PAGE -->
-<div id="appPage">
-    <div id="mainContainer" class="main-app-box mx-auto">
-        <div class="premium-header">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 id="dispTitle" class="text-4xl italic uppercase" style="color:var(--n-col);">SAHAYARAJ-2026</h1>
-                    <div id="liveDateTime" class="text-yellow-300 font-bold text-sm"></div>
-                </div>
-                <div class="text-right text-white">
-                    <p class="text-xs">RECORDS: <span id="recCount">0</span></p>
-                    <h2 id="mainTotal" class="text-4xl">₹0</h2>
-                </div>
+<div class="container" id="adminContent" style="display: none;">
+    <div class="header-bar">
+        <div><h2 style="border:none; padding:0; margin:0; display:inline-block; vertical-align:middle;">அக்கவுண்ட் மேனேஜர் கட்டுப்பாட்டு அறை</h2></div>
+        <div style="display: flex; align-items: center;">
+            <div class="status-container">
+                <div id="statusBlink" class="status-indicator" style="display:none;"></div>
+                <span id="statusText" class="status-text"></span>
             </div>
+            <button onclick="handleSignOut()" class="btn-danger" style="width: auto; padding: 10px 20px;">Sign Out (வெளியேறு)</button>
         </div>
+    </div>
 
-        <div class="action-bar">
-            <div id="viewCR" onclick="setViewMode('CR')" class="action-btn active">CREDIT (+)</div>
-            <div id="viewDR" onclick="setViewMode('DR')" class="action-btn">DEBIT (-)</div>
-            <div id="viewBOTH" onclick="setViewMode('BOTH')" class="action-btn">BOTH</div>
-        </div>
-
-        <div class="p-4">
-            <div id="catGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-5 mb-4"></div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-3xl border-4 border-black">
-                    <h3 class="text-xl border-b-4 border-green-600 mb-4 italic uppercase">New Entry</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="date" id="eDate" class="border-2 border-black p-3 rounded-xl">
-                        <input type="tel" id="eMob" placeholder="Mobile" class="border-2 border-black p-3 rounded-xl">
-                        <select id="eCat" class="border-2 border-black p-3 rounded-xl"></select>
-                        <input type="text" id="eDesc" placeholder="Remark" class="border-2 border-black p-3 rounded-xl">
-                        <input type="number" id="eAmt" placeholder="Amount" class="border-2 border-black p-3 rounded-xl">
-                        <select id="eType" class="border-2 border-black p-3 rounded-xl">
-                            <option value="CR">IN (+)</option>
-                            <option value="DR">OUT (-)</option>
-                        </select>
-                    </div>
-                    <button onclick="saveData()" class="w-full py-4 mt-6 rounded-xl text-xl btn-style bg-green-600">SAVE ✅</button>
-                </div>
-
-                <div class="bg-white p-6 rounded-3xl border-4 border-black">
-                    <h3 class="text-xl border-b-4 border-blue-600 mb-4 italic uppercase">Search & Tools</h3>
-                    <button onclick="refresh()" class="w-full bg-slate-800 text-white py-4 mt-4 rounded-xl btn-style">SEARCH DATA 🔎</button>
-                </div>
+    <div class="card">
+        <h2 id="formTitle">புதிய பயனரை உருவாக்கு (Create User Pattern)</h2>
+        <div id="loadingStatus" class="loading">செயலாக்கத்தில் உள்ளது... காத்திருக்கவும்...</div>
+        <form id="userForm" onsubmit="handleFormSubmit(event)">
+            <input type="hidden" id="editMode" value="false">
+            <div class="form-group">
+                <input type="text" id="username" placeholder="UserName" required>
+                <input type="text" id="password" placeholder="Password" required>
+                <input type="date" id="expiredDate" required title="Password Expired Date">
+                <input type="url" id="sheetUrl" placeholder="Google Sheet URL (விரும்பினால் மட்டும்)">
             </div>
-
-            <div class="mt-8 bg-white border-4 border-black rounded-3xl overflow-hidden">
-                <table class="w-full text-sm">
-                    <thead class="bg-black text-white">
-                        <tr>
-                            <th class="p-3">DATE</th>
-                            <th class="p-3">MOBILE</th>
-                            <th class="p-3">CAT</th>
-                            <th class="p-3">REMARK</th>
-                            <th class="p-3 text-right">AMOUNT</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resTable" class="text-center"></tbody>
-                </table>
+            <div style="text-align: right; margin-top: 15px;">
+                <button type="button" id="cancelBtn" class="btn-danger" style="display:none; margin-right:10px; width:auto;" onclick="resetForm()">Cancel</button>
+                <button type="submit" id="submitBtn" style="width: auto; padding: 10px 30px;">Create User</button>
             </div>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>பயனர்கள் பட்டியல் (Total Users Dashboard)</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>UserName</th>
+                        <th>Password</th>
+                        <th>Expired Date</th>
+                        <th>Google Sheet URL</th>
+                        <th>Total User</th>
+                        <th>Total Transaction</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <tr><td colspan="7" style="text-align:center;">பயனர்கள் பட்டியல் ஏற்றப்படுகிறது...</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
 <script>
-let users = [
-    { id:"user1", pass:"1111", expiry:"2026-12-31" },
-    { id:"user2", pass:"2222", expiry:"2026-12-31" },
-    { id:"user3", pass:"3333", expiry:"2026-12-31" },
-    { id:"user4", pass:"4444", expiry:"2026-12-31" },
-    { id:"user5", pass:"5555", expiry:"2026-12-31" }
-];
+    // ⚠️ நீங்கள் கொடுத்த புதிய சரியான வெப் ஆப் URL இதோ நேரடியாக இணைக்கப்பட்டுள்ளது:
+    const API_URL = "https://script.google.com/macros/s/AKfycby8IBs9NX-eYtAEkkSFEkLyG3VxmCqsrdSMQrjuxlZ6ZZ3E-tbloG37lD4EjNz7TLcmCA/exec";
+    const MASTER_PASS = "admin123"; 
 
-let cfg = {
-    title:"SAHAYARAJ-2026",
-    cats:["FOOD","SHOP","BILL"]
-};
-
-let db = JSON.parse(localStorage.getItem("saha_v66_db")) || [];
-let currentViewMode = "CR";
-
-function checkLogin(){
-    document.getElementById("appPage").style.display = "none";
-}
-
-function loginUserCheck(){
-    let uid = document.getElementById("loginUser").value.trim();
-    let pwd = document.getElementById("loginPass").value.trim();
-
-    let user = users.find(u => u.id === uid && u.pass === pwd);
-
-    if(!user){
-        alert("INVALID USER ID OR PASSWORD");
-        return;
+    function checkLogin() {
+        const pass = document.getElementById('masterPassword').value;
+        if(pass === MASTER_PASS) {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            fetchUsers();
+        } else { document.getElementById('loginError').style.display = 'block'; }
     }
 
-    let today = new Date().toISOString().split("T")[0];
-    if(today > user.expiry){
-        alert("ACCOUNT EXPIRED");
-        return;
+    function handleSignOut() {
+        document.getElementById('masterPassword').value = "";
+        document.getElementById('loginError').style.display = 'none';
+        updateStatusIndicator("hide");
+        document.getElementById('adminContent').style.display = 'none';
+        document.getElementById('loginOverlay').style.display = 'flex';
     }
 
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("appPage").style.display = "block";
-    init();
-}
+    function showLoading(show) { document.getElementById('loadingStatus').style.display = show ? 'block' : 'none'; }
 
-function init(){
-    startClock();
-    renderUI();
-    refresh();
-}
+    function updateStatusIndicator(status) {
+        const indicator = document.getElementById('statusBlink');
+        const txt = document.getElementById('statusText');
+        if (status === "success") {
+            indicator.className = "status-indicator status-success"; indicator.innerText = "g"; indicator.style.display = "inline-block";
+            txt.innerText = "இணைக்கப்பட்டுள்ளது"; txt.style.color = "var(--success-color)";
+        } else if (status === "error") {
+            indicator.className = "status-indicator status-error"; indicator.innerText = "x"; indicator.style.display = "inline-block";
+            txt.innerText = "கூகுள் ஷீட்டுடன் இணையவில்லை!"; txt.style.color = "var(--danger-color)";
+        } else { indicator.style.display = "none"; txt.innerText = ""; }
+    }
 
-function startClock(){
-    setInterval(()=>{
-        let now = new Date();
-        document.getElementById("liveDateTime").innerText = now.toLocaleString();
-    },1000);
-}
+    // கூகுள் ஷீட்டில் இருந்து பயனர்கள் பட்டியலைப் பெறும் செயல்பாடு
+    function fetchUsers() {
+        showLoading(true);
+        const script = document.createElement('script');
+        script.src = `${API_URL}?action=getUsers&callback=handleUserData&t=${new Date().getTime()}`;
+        
+        script.onerror = function() {
+            updateStatusIndicator("error");
+            document.getElementById('userTableBody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--danger-color); font-weight:bold;">தரவுகளைப் பெற முடியவில்லை. கூகுள் செட்டிங்ஸை சரிபார்க்கவும்!</td></tr>`;
+            showLoading(false);
+        };
+        
+        document.body.appendChild(script);
+        document.body.removeChild(script);
+    }
 
-function renderUI(){
-    let grid = document.getElementById("catGrid");
-    let eCat = document.getElementById("eCat");
-    grid.innerHTML = "";
-    eCat.innerHTML = "";
+    // பெற்ற தரவுகளை அட்டவணையில் காண்பித்தல்
+    function handleUserData(data) {
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = "";
+        updateStatusIndicator("success");
 
-    cfg.cats.forEach(c=>{
-        grid.innerHTML += `<div class="cat-card"><p>${c}</p><h3>₹<span id="sum_${c}">0</span></h3></div>`;
-        eCat.innerHTML += `<option value="${c}">${c}</option>`;
-    });
-}
+        if(data && data.length > 0) {
+            data.forEach(user => {
+                let expDate = user.expiredDate;
+                if(expDate) {
+                    let d = new Date(expDate);
+                    if(!isNaN(d)) { expDate = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear(); }
+                }
+                let urlDisplay = user.url ? `<a href="${user.url}" target="_blank" style="color:var(--primary-color); word-break:break-all;">ஷீட் லிங்க்</a>` : `<span style="color:#aaa; font-style:italic;">இல்லை</span>`;
 
-function saveData(){
-    let d = eDate.value;
-    let a = eAmt.value;
-    if(!d || !a){ alert("DATE AND AMOUNT REQUIRED"); return; }
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${user.username}</b></td>
+                        <td>${user.password}</td>
+                        <td>${expDate}</td>
+                        <td>${urlDisplay}</td>
+                        <td><span style="color:var(--success-color); font-weight:bold;">${user.totalUser}</span></td>
+                        <td><span style="color:var(--primary-color); font-weight:bold;">${user.totalTransaction}</span></td>
+                        <td>
+                            <button onclick="editUser('${user.username}', '${user.password}', '${user.expiredDate}', '${user.url}')" style="width:auto; margin-right:5px;">Edit</button>
+                            <button class="btn-danger" onclick="deleteUser('${user.username}')" style="width:auto;">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } else { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">பயனர்கள் யாரும் இல்லை!</td></tr>`; }
+        showLoading(false);
+    }
 
-    db.push({
-        date:d,
-        mob:eMob.value || "-",
-        cat:eCat.value,
-        desc:eDesc.value || "-",
-        amt:parseFloat(a),
-        type:eType.value
-    });
+    // படிவத்தைச் சமர்ப்பிக்கும் போது (Create / Update) இயங்கும் செயல்பாடு
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        showLoading(true);
 
-    localStorage.setItem("saha_v66_db", JSON.stringify(db));
-    eAmt.value="";
-    eDesc.value="";
-    refresh();
-}
+        const isEdit = document.getElementById('editMode').value === "true";
+        const username = encodeURIComponent(document.getElementById('username').value);
+        const password = encodeURIComponent(document.getElementById('password').value);
+        const expiredDate = encodeURIComponent(document.getElementById('expiredDate').value);
+        const url = encodeURIComponent(document.getElementById('sheetUrl').value || "");
 
-function refresh(){
-    let html = "";
-    let total = 0;
+        const actionType = isEdit ? "updateUser" : "createUser";
+        
+        const script = document.createElement('script');
+        script.src = `${API_URL}?action=${actionType}&username=${username}&password=${password}&expiredDate=${expiredDate}&url=${url}&callback=handleFormResponse&t=${new Date().getTime()}`;
+        
+        script.onerror = function() {
+            alert("செயல்பாட்டில் தோல்வி! மீண்டும் முயற்சிக்கவும்.");
+            showLoading(false);
+        };
 
-    db.forEach(t=>{
-        if(currentViewMode==="BOTH" || currentViewMode===t.type){
-            total += t.type==="CR" ? t.amt : -t.amt;
-            html += `
-            <tr class="border-b">
-                <td class="p-3">${t.date}</td>
-                <td class="p-3">${t.mob}</td>
-                <td class="p-3">${t.cat}</td>
-                <td class="p-3">${t.desc}</td>
-                <td class="p-3 text-right">₹${t.amt}</td>
-            </tr>`;
+        document.body.appendChild(script);
+        document.body.removeChild(script);
+    }
+
+    function handleFormResponse(data) {
+        resetForm();
+        fetchUsers();
+    }
+
+    function editUser(username, password, expiredDate, url) {
+        document.getElementById('formTitle').innerText = "பயனர் விபரங்களை மாற்று (Edit User Mode)";
+        document.getElementById('submitBtn').innerText = "Update User";
+        document.getElementById('cancelBtn').style.display = "inline-block";
+        document.getElementById('editMode').value = "true";
+        document.getElementById('username').value = username;
+        document.getElementById('username').disabled = true; 
+        document.getElementById('password').value = password;
+        
+        if(expiredDate && expiredDate !== "undefined") {
+            let d = new Date(expiredDate);
+            if(!isNaN(d)) {
+                let yyyY = d.getFullYear();
+                let mm = String(d.getMonth() + 1).padStart(2, '0');
+                let dd = String(d.getDate()).padStart(2, '0');
+                document.getElementById('expiredDate').value = `${yyyY}-${mm}-${dd}`;
+            }
         }
-    });
+        document.getElementById('sheetUrl').value = (url === "undefined" || !url) ? "" : url;
+    }
 
-    document.getElementById("resTable").innerHTML = html;
-    document.getElementById("mainTotal").innerText = "₹"+total;
-    document.getElementById("recCount").innerText = db.length;
-}
+    function deleteUser(username) {
+        if(confirm(`உண்மையாகவே ${username} என்ற பயனரை நீக்க வேண்டுமா?`)) {
+            showLoading(true);
+            const script = document.createElement('script');
+            script.src = `${API_URL}?action=deleteUser&username=${encodeURIComponent(username)}&callback=handleFormResponse&t=${new Date().getTime()}`;
+            
+            script.onerror = function() {
+                alert("பயனரை நீக்குவதில் சிக்கல்!");
+                showLoading(false);
+            };
 
-function setViewMode(mode){
-    currentViewMode = mode;
-    document.querySelectorAll(".action-btn").forEach(btn=>btn.classList.remove("active"));
-    document.getElementById("view"+mode).classList.add("active");
-    refresh();
-}
+            document.body.appendChild(script);
+            document.body.removeChild(script);
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('formTitle').innerText = "புதிய பயனரை உருவாக்கு (Create User Pattern)";
+        document.getElementById('submitBtn').innerText = "Create User";
+        document.getElementById('cancelBtn').style.display = "none";
+        document.getElementById('editMode').value = "false";
+        document.getElementById('username').disabled = false;
+        document.getElementById('userForm').reset();
+    }
 </script>
 </body>
 </html>
