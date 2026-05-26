@@ -124,9 +124,9 @@
 </div>
 
 <script>
-    // ⚠️ உங்களின் புதிய வெப் ஆப் URL லிங்க் கீழே இணைக்கப்பட்டுள்ளது
-    const API_URL = "https://script.google.com/macros/s/AKfycbzklDgIOOtjnUwRrlul99a16wKlknXfqldJWeorfZwpwz5lA13shlCL5JWcQiuZVcE3rg/exec";
-    const MASTER_PASS = "1020"; 
+    // உங்களின் வெப் ஆப்ஸ் ஸ்கிரிப்ட் URL
+    const API_URL = "https://script.google.com/macros/s/AKfycby8IBs9NX-eYtAEkkSFEkLyG3VxmCqsrdSMQrjuxlZ6ZZ3E-tbloG37lD4EjNz7TLcmCA/exec";
+    const MASTER_PASS = "2233"; 
 
     function checkLogin() {
         const pass = document.getElementById('masterPassword').value;
@@ -159,82 +159,90 @@
         } else { indicator.style.display = "none"; txt.innerText = ""; }
     }
 
-    // 100% வேலை செய்யக்கூடிய எளிய GET/Callback முறை மூலம் தரவை எடுத்தல்
+    // 100% சுத்தமான POST Fetch முறை (உங்களது தற்போதைய கூகுள் ஆப்ஸ் ஸ்கிரிப்டிற்குப் பொருந்தும் படி அமைக்கப்பட்டது)
     function fetchUsers() {
         showLoading(true);
-        const script = document.createElement('script');
-        script.src = `${API_URL}?action=getUsers&callback=handleUserData&t=${new Date().getTime()}`;
         
-        script.onerror = function() {
-            updateStatusIndicator("error");
-            document.getElementById('userTableBody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--danger-color); font-weight:bold;">தரவுகளைப் பெற முடியவில்லை. கூகுள் ஷீட்டை சரிபார்க்கவும்!</td></tr>`;
+        fetch(API_URL, {
+            method: "POST",
+            redirect: "follow", // கூகுள் ரீடைரக்டை பின்தொடர இது மிக முக்கியம்
+            headers: { "Content-Type": "text/plain;charset=utf-8" }, // CORS பிழையைத் தவிர்க்க text/plain பயன்படுத்துகிறோம்
+            body: JSON.stringify({ action: "getUsers" })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = "";
+            updateStatusIndicator("success");
+
+            if(data && data.length > 0) {
+                data.forEach(user => {
+                    let expDate = user.expiredDate;
+                    if(expDate) {
+                        let d = new Date(expDate);
+                        if(!isNaN(d)) { expDate = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear(); }
+                    }
+                    let urlDisplay = user.url ? `<a href="${user.url}" target="_blank" style="color:var(--primary-color); word-break:break-all;">ஷீட் லிங்க்</a>` : `<span style="color:#aaa; font-style:italic;">இல்லை</span>`;
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><b>${user.username}</b></td>
+                            <td>${user.password}</td>
+                            <td>${expDate}</td>
+                            <td>${urlDisplay}</td>
+                            <td><span style="color:var(--success-color); font-weight:bold;">${user.totalUser}</span></td>
+                            <td><span style="color:var(--primary-color); font-weight:bold;">${user.totalTransaction}</span></td>
+                            <td>
+                                <button onclick="editUser('${user.username}', '${user.password}', '${user.expiredDate}', '${user.url}')" style="width:auto; margin-right:5px;">Edit</button>
+                                <button class="btn-danger" onclick="deleteUser('${user.username}')" style="width:auto;">Delete</button>
+                            </td>
+                        </tr>`;
+                });
+            } else { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">பயனர்கள் யாரும் இல்லை! புதிய பயனரை உருவாக்கவும்.</td></tr>`; }
             showLoading(false);
-        };
-        document.body.appendChild(script);
-        document.body.removeChild(script);
+        })
+        .catch(err => {
+            updateStatusIndicator("error");
+            document.getElementById('userTableBody').innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--danger-color); font-weight:bold;">தரவுகளைப் பெற முடியவில்லை. கூகுள் ஷீட் 'Anyone' செட்டிங்ஸை சரிபார்க்கவும்!</td></tr>`;
+            showLoading(false);
+        });
     }
 
-    function handleUserData(data) {
-        const tbody = document.getElementById('userTableBody');
-        tbody.innerHTML = "";
-        updateStatusIndicator("success");
-
-        if(data && data.length > 0) {
-            data.forEach(user => {
-                let expDate = user.expiredDate;
-                if(expDate) {
-                    let d = new Date(expDate);
-                    if(!isNaN(d)) { expDate = d.getDate() + "-" + (d.getMonth()+1) + "-" + d.getFullYear(); }
-                }
-                let urlDisplay = user.url ? `<a href="${user.url}" target="_blank" style="color:var(--primary-color); word-break:break-all;">ஷீட் லிங்க்</a>` : `<span style="color:#aaa; font-style:italic;">இல்லை</span>`;
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td><b>${user.username}</b></td>
-                        <td>${user.password}</td>
-                        <td>${expDate}</td>
-                        <td>${urlDisplay}</td>
-                        <td><span style="color:var(--success-color); font-weight:bold;">${user.totalUser}</span></td>
-                        <td><span style="color:var(--primary-color); font-weight:bold;">${user.totalTransaction}</span></td>
-                        <td>
-                            <button onclick="editUser('${user.username}', '${user.password}', '${user.expiredDate}', '${user.url}')" style="width:auto; margin-right:5px;">Edit</button>
-                            <button class="btn-danger" onclick="deleteUser('${user.username}')" style="width:auto;">Delete</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        } else { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">பயனர்கள் யாரும் இல்லை! புதிய பயனரை உருவாக்கவும்.</td></tr>`; }
-        showLoading(false);
-    }
-
-    // ⚠️ டக்கு என்று பதிய வைக்கக்கூடிய நேற்றைய எளிய திருத்தப்பட்ட சமர்ப்பிப்பு முறை
     function handleFormSubmit(e) {
         e.preventDefault();
         showLoading(true);
 
         const isEdit = document.getElementById('editMode').value === "true";
-        const username = encodeURIComponent(document.getElementById('username').value);
-        const password = encodeURIComponent(document.getElementById('password').value);
-        const expiredDate = encodeURIComponent(document.getElementById('expiredDate').value);
-        const url = encodeURIComponent(document.getElementById('sheetUrl').value || "");
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const expiredDate = document.getElementById('expiredDate').value;
+        const url = document.getElementById('sheetUrl').value || "";
 
         const actionType = isEdit ? "updateUser" : "createUser";
-        
-        const script = document.createElement('script');
-        script.src = `${API_URL}?action=${actionType}&username=${username}&password=${password}&expiredDate=${expiredDate}&url=${url}&callback=handleFormResponse&t=${new Date().getTime()}`;
-        
-        script.onerror = function() {
+        const payload = {
+            action: actionType,
+            username: username,
+            password: password,
+            expiredDate: expiredDate,
+            url: url
+        };
+
+        fetch(API_URL, {
+            method: "POST",
+            redirect: "follow",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("வெற்றிகரமாகச் சேமிக்கப்பட்டது!");
+            resetForm();
+            fetchUsers();
+        })
+        .catch(err => {
             alert("செயல்பாட்டில் தோல்வி! மீண்டும் முயற்சிக்கவும்.");
             showLoading(false);
-        };
-        document.body.appendChild(script);
-        document.body.removeChild(script);
-    }
-
-    function handleFormResponse(data) {
-        alert("வெற்றிகரமாகச் சேமிக்கப்பட்டது!");
-        resetForm();
-        fetchUsers();
+        });
     }
 
     function editUser(username, password, expiredDate, url) {
@@ -261,10 +269,21 @@
     function deleteUser(username) {
         if(confirm(`உண்மையாகவே ${username} என்ற பயனரை நீக்க வேண்டுமா?`)) {
             showLoading(true);
-            const script = document.createElement('script');
-            script.src = `${API_URL}?action=deleteUser&username=${encodeURIComponent(username)}&callback=handleFormResponse&t=${new Date().getTime()}`;
-            document.body.appendChild(script);
-            document.body.removeChild(script);
+            fetch(API_URL, {
+                method: "POST",
+                redirect: "follow",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify({ action: "deleteUser", username: username })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("பயனர் நீக்கப்பட்டார்!");
+                fetchUsers();
+            })
+            .catch(err => {
+                alert("பயனரை நீக்குவதில் சிக்கல்!");
+                showLoading(false);
+            });
         }
     }
 
